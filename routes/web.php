@@ -15,6 +15,18 @@ Route::get('/', function () {
     return view('welcome');
 });
 
+Route::get('/login-api', function() {
+    return view('login-api');
+});
+
+Route::get('/register-api', function() {
+    return view('register-api');
+});
+
+Route::get('/books', function() {
+    return view('books');
+});
+
 Auth::routes();
 
 Route::get('/home', 'HomeController@index')->name('home');
