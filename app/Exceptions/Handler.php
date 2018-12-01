@@ -32,8 +32,7 @@ class Handler extends ExceptionHandler
      * @param  \Exception  $exception
      * @return void
      */
-    public function report(Exception $exception)
-    {
+    public function report(Exception $exception) {
         parent::report($exception);
     }
 
@@ -46,6 +45,11 @@ class Handler extends ExceptionHandler
      */
     public function render($request, Exception $exception)
     {
+		if ($request->wantsJson()) {
+			return response()->json([
+				'error' => 'Resource not found'
+			], 404);
+		}
         return parent::render($request, $exception);
     }
 }
