@@ -55,7 +55,7 @@ class BookController extends Controller
 		return new BookResource($book);
     }
 
-    /**
+    /**n
      * Update the specified resource in storage.
      *
      * @param  \Illuminate\Http\Request  $request

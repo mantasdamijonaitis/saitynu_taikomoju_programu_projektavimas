@@ -22,3 +22,7 @@ Route::post('login', 'AuthController@login');
 
 Route::apiResource('books', 'BookController');
 Route::post('books/{book}/ratings', 'RatingController@store');
+
+Route::fallback(function(){
+	return response()->json(['message' => 'Not Found!'], 404);
+});
