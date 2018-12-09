@@ -93,9 +93,12 @@ const closeBooksModal = () => {
 };
 
 $(".books-save").click(() => {
+  const recordId = booksModal.data("id");
+  const requestType = recordId ? "PUT" : "POST";
+  const requestUrl = recordId ? apiRoutes.books + "/" + recordId : apiRoutes.books;
   $.ajax({
-    url: apiRoutes.books,
-    type: 'POST',
+    url: requestUrl,
+    type: requestType,
     contentType: 'application/json; charset=utf-8',
     dataType: 'json',
     data: JSON.stringify(formAsJson({target: ".books-form"})),
