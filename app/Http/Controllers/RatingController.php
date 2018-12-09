@@ -26,6 +26,11 @@ class RatingController extends Controller
 			['rating' => $request->rating]
 		);
 
+		if ($rating -> rating !== $request -> rating) {
+		    $rating->update($request->only(['rating']));
+        }
+
 		return new RatingResource($rating);
 	}
+
 }

@@ -2,14 +2,15 @@ $(".form-register").on("submit", (e) => {
     e.preventDefault();
     $.ajax({
         url: apiRoutes.register,
-        data: formAsJson(e),
+        data: JSON.stringify(formAsJson(e)),
+        contentType: 'application/json; charset=utf-8',
+        dataType: 'json',
         type: 'POST',
         beforeSend: function(xhrObj){
             xhrObj.setRequestHeader("Content-Type","application/json");
             xhrObj.setRequestHeader("Accept","application/json");
         },
         success: (response) => {
-            console.log("register success");
             loadTemplate(templateRoutes.login);
         },
         error: (response) => {
@@ -17,7 +18,6 @@ $(".form-register").on("submit", (e) => {
             const responseBody = response.responseJSON;
             if (responseBody.error && responseBody.error.errorInfo) {
                 const errorMessagesArray = responseBody.error.errorInfo;
-                console.log("arr", errorMessagesArray);
                 if (errorMessagesArray.length == 3) {
                     const directMessage = errorMessagesArray[2];
                     console.log("directMessage", directMessage);

@@ -1,7 +1,7 @@
 const apiRoutes = {
     register: '/api/register',
     login: '/api/login',
-    books: '/api/books',
+    books: '/api/books'
 };
 
 const templateRoutes = {
@@ -27,6 +27,10 @@ const formAsJson = (selector) => {
 
 const getToken = () => {
     return localStorage.getItem('token');
+};
+
+const getCurrentUserEmail = () => {
+    return localStorage.getItem('email');
 };
 
 const getAuthenticationToken = () => {

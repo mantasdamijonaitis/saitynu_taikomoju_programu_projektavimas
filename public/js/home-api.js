@@ -7,8 +7,11 @@ const showAlert = () => {
 };
 
 const booksModal = $("#books-modal");
-
+const booksRating = $(".book-rating");
 const booksTableBody = $(".books-table-body");
+const bookTitleInput = $(".book-title");
+const bookDescriptionInput = $(".book-description");
+const bookRatingContainer = $(".book-rating-container");
 
 const renderTableColumn = (data) => {
   return "<td>" + (data != null ? data : "") + "</td>";
@@ -17,6 +20,7 @@ const renderTableColumn = (data) => {
 const renderRow = (rowData) => {
   const contentToAppend =
       "<tr data-id='" + rowData.id + "'>" +
+        renderTableColumn(rowData.user.email) +
         renderTableColumn(rowData.title) +
         renderTableColumn(rowData.description) +
         renderTableColumn(rowData.average_rating) +
@@ -25,23 +29,45 @@ const renderRow = (rowData) => {
   booksTableBody.append(contentToAppend);
 };
 
+const setBookRating = (data) => {
+  const ratings = data.ratings;
+  const user = data.user;
+  let currentUserRating = 0;
+  ratings.forEach((rating) => {
+    if (rating.user_id === user.id && user.email === getCurrentUserEmail()) {
+      currentUserRating = rating.rating;
+    }
+  });
+  if (currentUserRating !== 0) {
+    booksRating.val(currentUserRating);
+  }
+};
+
 const updateAndShowModal = (data) => {
-  console.log("data", data);
-  $(".book-title").val(data.title);
-  $(".book-description").val(data.description);
+  bookRatingContainer.css("display", "block");
+  bookTitleInput.val(data.title);
+  bookDescriptionInput.val(data.description);
   $(".books-delete").css("display", "block");
+  if (data.user.email !== getCurrentUserEmail()) {
+    bookTitleInput.attr("disabled", "disabled");
+    bookDescriptionInput.attr("disabled", "disabled");
+  } else {
+    bookTitleInput.removeAttr("disabled");
+    bookDescriptionInput.removeAttr("disabled");
+  }
+  setBookRating(data);
   booksModal.attr("data-id", data.id);
+  booksModal.attr("data-author", data.user.email);
   booksModal.modal("show");
 };
 
 const initializeRowClickEvents = () => {
   $(".books-table tr").click((e) => {
     let clickedElement = $(e.target);
-    console.log("nodename", clickedElement.prop("nodeName"));
     if (clickedElement.prop("nodeName") === "TD") {
       clickedElement = clickedElement.parent();
     }
-    const rowId = clickedElement.data("id");
+    const rowId = clickedElement.attr("data-id");
     $.ajax({
       url: apiRoutes.books + "/" + rowId,
       type: 'GET',
@@ -51,7 +77,6 @@ const initializeRowClickEvents = () => {
         xhrObj.setRequestHeader('Authorization', getToken());
       },
       success: (e) => {
-        console.log("e", e);
         updateAndShowModal(e.data);
       },
       error: (e) => {
@@ -80,7 +105,7 @@ const fillTableWithData = () => {
     },
     success: (response) => {
       renderTableRows(response);
-      console.log("response json is", response);
+      resetModal();
     },
     error: (response) => {
       showAlert();
@@ -92,40 +117,87 @@ const closeBooksModal = () => {
   booksModal.modal("toggle");
 };
 
-$(".books-save").click(() => {
-  const recordId = booksModal.data("id");
-  const requestType = recordId ? "PUT" : "POST";
-  const requestUrl = recordId ? apiRoutes.books + "/" + recordId : apiRoutes.books;
+const saveRating = (bookId, author) => {
+  if (!bookId) {
+    saveBook(bookId);
+    fillTableWithData();
+    closeBooksModal();
+    return;
+  }
+  const bookRating = booksRating.val();
   $.ajax({
-    url: requestUrl,
-    type: requestType,
+    url: apiRoutes.books + "/" + bookId + "/ratings",
+    type: "POST",
+    data: JSON.stringify({
+      rating: bookRating
+    }),
     contentType: 'application/json; charset=utf-8',
     dataType: 'json',
-    data: JSON.stringify(formAsJson({target: ".books-form"})),
     beforeSend: function(xhrObj){
       xhrObj.setRequestHeader("Content-Type","application/json");
       xhrObj.setRequestHeader("Accept","application/json");
       xhrObj.setRequestHeader('Authorization', getAuthenticationToken());
     },
     success: (e) => {
-      console.log("success e", e);
+      if (author === getCurrentUserEmail()) {
+        saveBook(bookId);
+      }
       fillTableWithData();
       closeBooksModal();
-
     },
     error: (e) => {
-      console.log("error e", e);
       showAlert();
     }
   })
+};
+
+const saveBook = (recordId) => {
+  const requestType = recordId ? "PUT" : "POST";
+  const requestUrl = recordId ? apiRoutes.books + "/" + recordId : apiRoutes.books;
+  const formData = formAsJson({target: ".books-form"});
+  $.ajax({
+    url: requestUrl,
+    type: requestType,
+    contentType: 'application/json; charset=utf-8',
+    dataType: 'json',
+    data: JSON.stringify(formData),
+    beforeSend: function(xhrObj){
+      xhrObj.setRequestHeader("Content-Type","application/json");
+      xhrObj.setRequestHeader("Accept","application/json");
+      xhrObj.setRequestHeader('Authorization', getAuthenticationToken());
+    },
+    success: () => {
+      fillTableWithData();
+      closeBooksModal();
+    },
+    error: () => {
+      showAlert();
+    }
+  });
+};
+
+$(".books-save").click(() => {
+  const recordId = booksModal.attr("data-id");
+  const recordAuthor = booksModal.attr("data-author");
+  saveRating(recordId, recordAuthor);
 });
 
-$(".add-book").click(() => {
+const resetModal = () => {
   $(".books-delete").css("display", "none");
+  bookTitleInput.val('');
+  bookDescriptionInput.val('');
+  booksRating.val(0);
+  bookRatingContainer.css("display", "none");
+  booksModal.removeAttr("data-id");
+  booksModal.removeAttr("data-author");
+};
+
+$(".add-book").click(() => {
+  resetModal();
 });
 
 $(".books-delete").click(() => {
-  const recordId = booksModal.data("id");
+  const recordId = booksModal.attr("data-id");
   $.ajax({
     url: apiRoutes.books + "/" + recordId,
     type: "DELETE",

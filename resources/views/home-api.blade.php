@@ -6,6 +6,7 @@
     <table class="books-table table table-hover table-striped table-bordered">
         <thead>
             <tr>
+                <th>Author</th>
                 <th>Title</th>
                 <th>Description</th>
                 <th>Average rating</th>
@@ -37,6 +38,17 @@
                     <div class="form-group">
                         <label>Book description</label>
                         <input type="text" class="form-control book-description" name="description" autocomplete="off" required/>
+                    </div>
+                    <div class="form-group book-rating-container">
+                        <label>Your book rating</label>
+                        <select class="form-control book-rating">
+                            <option value="0">Not rated</option>
+                            <option value="1">1</option>
+                            <option value="2">2</option>
+                            <option value="3">3</option>
+                            <option value="4">4</option>
+                            <option value="5">5</option>
+                        </select>
                     </div>
                 </form>
             </div>

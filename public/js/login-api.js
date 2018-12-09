@@ -11,6 +11,7 @@ $(".form-signin").on('submit', (e) => {
         success: (response) => {
             console.log("success", response);
             localStorage.setItem('token', response.access_token);
+            localStorage.setItem('email', $("#inputEmail").val());
             loadTemplate(templateRoutes.home);
         },
         error: (response) => {
