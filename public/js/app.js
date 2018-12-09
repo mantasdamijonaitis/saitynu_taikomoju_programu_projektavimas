@@ -1,11 +1,13 @@
 const apiRoutes = {
     register: '/api/register',
-    login: '/api/login'
+    login: '/api/login',
+    books: '/api/books',
 };
 
 const templateRoutes = {
     register: 'register-api',
-    login: 'login-api'
+    login: 'login-api',
+    home: 'home-api',
 };
 
 const container = $(".content");
@@ -19,7 +21,24 @@ const formAsJson = (selector) => {
     new FormData($(selector.target)[0]).forEach(function(value, key){
         object[key] = value;
     });
-    return JSON.stringify(object);
+    console.log("object", object);
+    return object;
 };
 
-loadTemplate(templateRoutes.register);
+const getToken = () => {
+    return localStorage.getItem('token');
+};
+
+const getAuthenticationToken = () => {
+    return "Bearer "  + getToken();
+};
+
+const isTokenSet = () => {
+    return getToken();
+};
+
+if (isTokenSet()) {
+    loadTemplate(templateRoutes.home);
+} else {
+    loadTemplate(templateRoutes.login);
+}

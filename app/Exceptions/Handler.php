@@ -45,7 +45,7 @@ class Handler extends ExceptionHandler
      */
     public function render($request, Exception $exception)
     {
-		if ($request->wantsJson()) {
+		if (/*$request->wantsJson()*/false) {
 			return response()->json([
 				'error' => $exception
 			], 404);

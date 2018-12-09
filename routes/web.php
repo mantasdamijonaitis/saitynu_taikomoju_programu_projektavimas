@@ -23,6 +23,10 @@ Route::get('/register-api', function() {
     return view('register-api');
 });
 
+Route::get('/home-api', function() {
+    return view('home-api');
+});
+
 Route::get('/books', function() {
     return view('books');
 });

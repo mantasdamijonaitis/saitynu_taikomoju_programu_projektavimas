@@ -4,13 +4,14 @@ $(".registerButton").on('click', () => {
 
 $(".form-signin").on('submit', (e) => {
     e.preventDefault();
-    console.log(apiRoutes);
     $.ajax({
         url: apiRoutes.login,
         data: formAsJson(e),
         type: 'POST',
         success: (response) => {
-            console.log("success");
+            console.log("success", response);
+            localStorage.setItem('token', response.access_token);
+            loadTemplate(templateRoutes.home);
         },
         error: (response) => {
             $(".alert").css("display", "block");
