@@ -12,7 +12,7 @@ $(".form-signin").on('submit', (e) => {
             console.log("success", response);
             localStorage.setItem('token', response.access_token);
             localStorage.setItem('email', $("#inputEmail").val());
-            loadTemplate(templateRoutes.home);
+            window.location.reload();
         },
         error: (response) => {
             $(".alert").css("display", "block");

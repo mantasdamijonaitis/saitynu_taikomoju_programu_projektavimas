@@ -3,7 +3,8 @@
     <div class="alert alert-danger">
         <strong>Error!</strong> Error! Please contact the administrator!
     </div>
-    <table class="books-table table table-hover table-striped table-bordered">
+    <img class="management-image" src="{{ asset('images/management.jpg') }}">
+    <table class="books-table table table-hover table-striped table-bordered table-responsive">
         <thead>
             <tr>
                 <th>Author</th>

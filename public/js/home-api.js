@@ -3,7 +3,11 @@ if (!isTokenSet()) {
 }
 
 const showAlert = () => {
-  $(".alert").css("display", "block");
+  const alert = $(".alert");
+  alert.css("display", "block");
+  setTimeout(() => {
+    alert.css("display", "none");
+  }, 3000);
 };
 
 const booksModal = $("#books-modal");

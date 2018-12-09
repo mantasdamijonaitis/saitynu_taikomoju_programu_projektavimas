@@ -46,3 +46,9 @@ if (isTokenSet()) {
 } else {
     loadTemplate(templateRoutes.login);
 }
+
+$(".btn-logout").click(() => {
+  localStorage.removeItem("token");
+  localStorage.removeItem("email");
+  loadTemplate(templateRoutes.login);
+});

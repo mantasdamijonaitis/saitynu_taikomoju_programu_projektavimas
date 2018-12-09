@@ -2,6 +2,19 @@
     display: none;
 }
 
-.row-template {
-    display: none;
+@media screen and (min-width: 540px) {
+    .table-responsive {
+        display: table !important;
+    }
+}
+
+.management-image {
+    width: 100%;
+    max-width: 400px;
+    height: auto;
+    margin-bottom: 10px;
+}
+
+table {
+    font-family: 'Karla', sans-serif;;
 }
